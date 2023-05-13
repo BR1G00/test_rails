@@ -26,6 +26,22 @@ bundle exec rspec
 
 a) L'api corrente /api/posts ha un problema di performance molto comune. Qual è? Come si potrebbe risolvere?
 
+Il problema principale è che vengono recuperati tutti i post in un'unica query. Successivamente viene fatta una query per ogni singolo post per reguperare i tags collegati e questo può rallentare l'esecuzione nel caso in cui ci siano parecchi post.
+
+La query da eseguire per migliorare il risultato è questa: SELECT * FROM posts LEFT JOIN tags ON tags.post = posts.id;
+In questo modo vengono reuperati tutti i post con tutti i tag associati ad esso, ma per ogni post avrei una duplicazione, tante volte quanti sono i tag associati ad esso. Quindi dovrei raggruppare i dati tramite ruby.
+Ad esempio se un post possiede 4 tag ottengo 4 righe che fanno riferimento a quel post.
+Quindi per ottimizzare si può fare così: 
+SELECT 
+	posts.id AS id,
+	posts.title AS title,
+	GROUP_CONCAT(tags.name) AS tags
+FROM posts
+LEFT JOIN tags ON tags.post = posts.id
+GROUP BY posts.id;
+In questo modo ottengo per ogni post una singola riga in cui i tag associati sono separati da virgola.
+Entrambe le soluzioni in ogni caso effettuano una sola query al DB.
+
 b) Implementare una nuova API nel PostsController che, ricevendo in GET un parametro "term" permetta di cercare per nome e per tag i post.
 
 Ad esempio, cercando "gatto", verrà trovato un post che contiene la parola gatto o che ha almeno un tag che si chiama "gatto".
