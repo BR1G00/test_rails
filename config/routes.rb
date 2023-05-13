@@ -4,6 +4,10 @@ Rails.application.routes.draw do
   root to: 'home#index'
 
   namespace :api do
-    resources :posts, only: [:index]
+    resources :posts, only: [:index] do
+      collection do
+        get 'search/:term', action: :search
+      end
+    end
   end
 end

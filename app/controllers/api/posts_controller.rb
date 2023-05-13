@@ -14,4 +14,15 @@ class Api::PostsController < ApplicationController
       }
     end
   end
+
+  def search
+    term = params[:term]
+    @posts = if term
+              Post.joins(:tags).where('title LIKE ? OR tags.name = ?', "%#{term}%", term)
+            else
+              []
+            end
+
+    render json: @posts, include: [:tags] # questo ritorna i post includendo anche i tags collegati
+  end
 end
