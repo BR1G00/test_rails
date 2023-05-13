@@ -32,7 +32,7 @@ La query da eseguire per migliorare il risultato è questa: SELECT * FROM posts 
 In questo modo vengono reuperati tutti i post con tutti i tag associati ad esso, ma per ogni post avrei una duplicazione, tante volte quanti sono i tag associati ad esso. Quindi dovrei raggruppare i dati tramite ruby.
 Ad esempio se un post possiede 4 tag ottengo 4 righe che fanno riferimento a quel post.
 Quindi per ottimizzare si può fare così: 
-sql```
+```sql
 SELECT 
 	posts.id AS id,
 	posts.title AS title,
