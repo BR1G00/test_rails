@@ -18,7 +18,7 @@ class Api::PostsController < ApplicationController
   def search
     term = params[:term]
     @posts = if term
-              Post.joins(:tags).where('title LIKE ? OR tags.name = ?', "%#{term}%", term)
+              Post.joins(:tags).where('title LIKE ? OR LIKE = ?', "%#{term}%", "%#{term}%")
             else
               []
             end
