@@ -34,20 +34,20 @@ Ad esempio se un post possiede 4 tag ottengo 4 righe che fanno riferimento a que
 Quindi per ottimizzare si può fare così: 
 ```sql
 SELECT 
-	posts.id AS id,
-	posts.title AS title,
-	GROUP_CONCAT(tags.name) AS tags
+  posts.id AS id,
+  posts.title AS title,
+  string_agg(tags.name, ',') AS tags
 FROM posts
-LEFT JOIN tags ON tags.post = posts.id
+LEFT JOIN tags ON tags.post_id = posts.id
 GROUP BY posts.id;
 ```
 
 una soluzione in ruby sarebbe questa 
 
 ```ruby
-Post.select('posts.id as id, posts.title as title, GROUP_CONCAT(tags.name) as tags')
-  .left_joins(:tags)
-  .group('posts.id')
+Post.joins(:tags)
+    .select('posts.id AS id, posts.title AS title, string_agg(tags.name, \',\') AS tags')
+    .group('posts.id')
 ```
 
 In questo modo ottengo per ogni post una singola riga in cui i tag associati sono separati da virgola.
